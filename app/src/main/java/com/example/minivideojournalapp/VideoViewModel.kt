@@ -18,11 +18,11 @@ class VideoViewModel(
         loadVideos()
     }
 
-    fun saveVideo(filePath: String, title: String? = null) {
+    fun saveVideo(filePath: String, description: String? = null) {
         queries.insertVideo(
             file_path = filePath,
             timestamp = System.currentTimeMillis(),
-            title = title
+            description = description
         )
         loadVideos()
     }

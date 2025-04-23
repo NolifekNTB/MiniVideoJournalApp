@@ -22,7 +22,10 @@ import androidx.camera.video.QualitySelector
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoRecordEvent
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +35,10 @@ import java.io.File
 
 @Composable
 fun VideoRecordingScreen(viewModel: VideoViewModel = koinViewModel()) {
+    val showTitleDialog = remember { mutableStateOf(false) }
+    val lastSavedPath = remember { mutableStateOf<String?>(null) }
+    val descriptionInput = remember { mutableStateOf("") }
+
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val previewView = remember { PreviewView(context) }
@@ -87,7 +94,8 @@ fun VideoRecordingScreen(viewModel: VideoViewModel = koinViewModel()) {
                         is VideoRecordEvent.Finalize -> {
                             recording.value = null
                             Toast.makeText(context, "Saved to ${output.path}", Toast.LENGTH_SHORT).show()
-                            viewModel.saveVideo(output.absolutePath, "My Recording")
+                            lastSavedPath.value = output.absolutePath
+                            showTitleDialog.value = true
                         }
                         is VideoRecordEvent.Start -> {
                             // Optional: notify recording started
@@ -98,4 +106,39 @@ fun VideoRecordingScreen(viewModel: VideoViewModel = koinViewModel()) {
             Text(if (recording.value == null) "Start Recording" else "Stop Recording")
         }
     }
+
+    if (showTitleDialog.value && lastSavedPath.value != null) {
+        AlertDialog(
+            onDismissRequest = { showTitleDialog.value = false },
+            title = { Text("Add a Description") },
+            text = {
+                TextField(
+                    value = descriptionInput.value,
+                    onValueChange = { descriptionInput.value = it },
+                    placeholder = { Text("Enter an optional description") }
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.saveVideo(lastSavedPath.value!!, descriptionInput.value.ifBlank { null })
+                    showTitleDialog.value = false
+                    descriptionInput.value = ""
+                    lastSavedPath.value = null
+                }) {
+                    Text("Save")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    viewModel.saveVideo(lastSavedPath.value!!, null)
+                    showTitleDialog.value = false
+                    descriptionInput.value = ""
+                    lastSavedPath.value = null
+                }) {
+                    Text("Skip")
+                }
+            }
+        )
+    }
+
 }

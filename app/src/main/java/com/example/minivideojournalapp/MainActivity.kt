@@ -28,8 +28,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val viewModel: VideoViewModel = koinViewModel()
+            val videos by viewModel.videos.collectAsState()
+
             CameraScreen()
             VideoRecordingScreen()
+
+            LazyColumn {
+                items(videos) { video ->
+                    Text("Saved: ${video.description} @ ${video.file_path}")
+                }
+            }
         }
     }
 }
