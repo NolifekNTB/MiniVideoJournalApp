@@ -27,10 +27,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import org.koin.androidx.compose.koinViewModel
 import java.io.File
 
 @Composable
-fun VideoRecordingScreen() {
+fun VideoRecordingScreen(viewModel: VideoViewModel = koinViewModel()) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val previewView = remember { PreviewView(context) }
@@ -86,7 +87,7 @@ fun VideoRecordingScreen() {
                         is VideoRecordEvent.Finalize -> {
                             recording.value = null
                             Toast.makeText(context, "Saved to ${output.path}", Toast.LENGTH_SHORT).show()
-                            saveVideoToDatabase(context, output.absolutePath, "My Recording")
+                            viewModel.saveVideo(output.absolutePath, "My Recording")
                         }
                         is VideoRecordEvent.Start -> {
                             // Optional: notify recording started
