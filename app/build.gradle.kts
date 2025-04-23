@@ -40,6 +40,13 @@ android {
     }
 }
 
+sqldelight {
+    databases {
+        create("AppDatabase") {
+            packageName.set("com.example.minivideojournalapp")
+        }
+    }
+}
 dependencies {
     //Koin
     implementation(libs.koin.android)
@@ -78,10 +85,3 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 }
 
-sqldelight {
-    databases {
-        create("Database") {
-            packageName.set("com.example")
-        }
-    }
-}

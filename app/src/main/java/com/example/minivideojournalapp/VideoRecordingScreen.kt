@@ -86,6 +86,7 @@ fun VideoRecordingScreen() {
                         is VideoRecordEvent.Finalize -> {
                             recording.value = null
                             Toast.makeText(context, "Saved to ${output.path}", Toast.LENGTH_SHORT).show()
+                            saveVideoToDatabase(context, output.absolutePath, "My Recording")
                         }
                         is VideoRecordEvent.Start -> {
                             // Optional: notify recording started

@@ -1,0 +1,14 @@
+CREATE TABLE video_recordings (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    file_path TEXT NOT NULL,
+    timestamp INTEGER NOT NULL,
+    title TEXT
+);
+
+insertVideo:
+INSERT INTO video_recordings(file_path, timestamp, title)
+VALUES (?, ?, ?);
+
+getAllVideos:
+SELECT * FROM video_recordings
+ORDER BY timestamp DESC;
