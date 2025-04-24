@@ -1,6 +1,8 @@
-package com.example.minivideojournalapp
+package com.example.minivideojournalapp.core.di
 
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
+import com.example.minivideojournalapp.AppDatabase
+import com.example.minivideojournalapp.feature.camera.ui.VideoViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 

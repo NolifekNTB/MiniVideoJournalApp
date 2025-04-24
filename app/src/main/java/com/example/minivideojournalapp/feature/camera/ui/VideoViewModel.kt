@@ -1,4 +1,4 @@
-package com.example.minivideojournalapp
+package com.example.minivideojournalapp.feature.camera.ui
 
 import androidx.lifecycle.ViewModel
 import comexampleminivideojournalapp.VideoQueries
