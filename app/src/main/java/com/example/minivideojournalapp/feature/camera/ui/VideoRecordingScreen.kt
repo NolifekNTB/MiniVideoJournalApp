@@ -1,4 +1,4 @@
-package com.example.minivideojournalapp
+package com.example.minivideojournalapp.feature.camera.ui
 
 import androidx.camera.video.Recorder
 import androidx.camera.video.VideoCapture
@@ -26,7 +26,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
@@ -34,7 +33,20 @@ import org.koin.androidx.compose.koinViewModel
 import java.io.File
 
 @Composable
-fun VideoRecordingScreen(viewModel: VideoViewModel = koinViewModel()) {
+fun VideoRecordingScreen(onNavigateToVideos: () -> Unit){
+    val viewModel: VideoViewModel = koinViewModel()
+
+    VideoRecordingScreenInternal(
+        onNavigateToVideos = onNavigateToVideos,
+        saveVideo = viewModel::saveVideo
+    )
+}
+
+@Composable
+fun VideoRecordingScreenInternal(
+    onNavigateToVideos: () -> Unit,
+    saveVideo: (filePath: String, description: String?) -> Unit,
+){
     val showTitleDialog = remember { mutableStateOf(false) }
     val lastSavedPath = remember { mutableStateOf<String?>(null) }
     val descriptionInput = remember { mutableStateOf("") }
@@ -68,6 +80,8 @@ fun VideoRecordingScreen(viewModel: VideoViewModel = koinViewModel()) {
             video
         )
     }
+
+    CameraPermissionHandler(onPermissionGranted = {}, onPermissionDenied = {})
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -105,6 +119,10 @@ fun VideoRecordingScreen(viewModel: VideoViewModel = koinViewModel()) {
         }) {
             Text(if (recording.value == null) "Start Recording" else "Stop Recording")
         }
+
+        Button(onClick = { onNavigateToVideos() }) {
+            Text("📂 View Saved Videos")
+        }
     }
 
     if (showTitleDialog.value && lastSavedPath.value != null) {
@@ -120,7 +138,7 @@ fun VideoRecordingScreen(viewModel: VideoViewModel = koinViewModel()) {
             },
             confirmButton = {
                 TextButton(onClick = {
-                    viewModel.saveVideo(lastSavedPath.value!!, descriptionInput.value.ifBlank { null })
+                    saveVideo(lastSavedPath.value!!, descriptionInput.value.ifBlank { null })
                     showTitleDialog.value = false
                     descriptionInput.value = ""
                     lastSavedPath.value = null
@@ -130,7 +148,7 @@ fun VideoRecordingScreen(viewModel: VideoViewModel = koinViewModel()) {
             },
             dismissButton = {
                 TextButton(onClick = {
-                    viewModel.saveVideo(lastSavedPath.value!!, null)
+                    saveVideo(lastSavedPath.value!!,null)
                     showTitleDialog.value = false
                     descriptionInput.value = ""
                     lastSavedPath.value = null
@@ -140,5 +158,14 @@ fun VideoRecordingScreen(viewModel: VideoViewModel = koinViewModel()) {
             }
         )
     }
-
 }
+
+@androidx.compose.ui.tooling.preview.Preview
+@Composable
+fun VideoRecordingScreenPreview() {
+    VideoRecordingScreenInternal(
+        onNavigateToVideos = {},
+        saveVideo = { _, _ -> }
+    )
+}
+

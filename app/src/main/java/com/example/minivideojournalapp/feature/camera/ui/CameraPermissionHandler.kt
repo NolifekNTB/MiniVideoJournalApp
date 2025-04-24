@@ -1,4 +1,4 @@
-package com.example.minivideojournalapp
+package com.example.minivideojournalapp.feature.camera.ui
 
 import android.app.Activity
 import android.content.pm.PackageManager
