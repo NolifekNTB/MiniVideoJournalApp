@@ -41,7 +41,6 @@ import com.example.minivideojournalapp.ui.shared.RequestPermission
 import comexampleminivideojournalapp.Video_recordings
 import java.util.Date
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun VideoListScreen(onVideoClick: (String) -> Unit) {
     val viewModel: VideoViewModel = koinViewModel()
@@ -58,7 +57,6 @@ fun VideoListScreen(onVideoClick: (String) -> Unit) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun VideoListScreenInternal(
     videos: List<Video_recordings>,
@@ -73,7 +71,6 @@ fun VideoListScreenInternal(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun VideoListItem(
     video: Video_recordings,
