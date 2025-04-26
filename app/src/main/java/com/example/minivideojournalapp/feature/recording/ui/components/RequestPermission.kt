@@ -1,15 +1,14 @@
-package com.example.minivideojournalapp.ui.shared
+package com.example.minivideojournalapp.feature.recording.ui.components
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.res.stringResource
+import com.example.minivideojournalapp.R
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -27,18 +26,18 @@ fun RequestPermission(
         permissionStates.shouldShowRationale -> {
             AlertDialog(
                 onDismissRequest = {},
-                title = { Text("Permissions Required") },
+                title = { Text(stringResource(R.string.permission_required)) },
                 text = { Text(rationaleText) },
                 confirmButton = {
                     TextButton(onClick = {
                         permissionStates.launchMultiplePermissionRequest()
                     }) {
-                        Text("Grant")
+                        Text(stringResource(R.string.grant_permission))
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { }) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.cancel))
                     }
                 }
             )

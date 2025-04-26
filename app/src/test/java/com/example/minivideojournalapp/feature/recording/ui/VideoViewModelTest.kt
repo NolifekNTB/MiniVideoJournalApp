@@ -3,7 +3,6 @@ package com.example.minivideojournalapp.feature.recording.ui
 import com.example.minivideojournalapp.feature.videoList.data.local.VideoRecordingDao
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.mockkClass
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

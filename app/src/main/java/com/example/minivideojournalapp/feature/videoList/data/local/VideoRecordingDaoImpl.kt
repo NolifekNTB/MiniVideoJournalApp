@@ -19,6 +19,11 @@ class VideoRecordingDaoImpl(
         description: String?,
         durationMs: Long
     ) {
-        queries.insertVideo(file_path = filePath, timestamp = timestamp, description = description, duration_ms = durationMs)
+        queries.insertVideo(
+            file_path = filePath,
+            timestamp = timestamp,
+            description = description,
+            duration_ms = durationMs
+        )
     }
 }

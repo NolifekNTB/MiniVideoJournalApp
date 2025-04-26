@@ -1,11 +1,6 @@
 package com.example.minivideojournalapp.feature.videoList.ui
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.media.MediaMetadataRetriever
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -28,7 +23,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -37,7 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.minivideojournalapp.R
 import com.example.minivideojournalapp.feature.recording.ui.VideoViewModel
-import com.example.minivideojournalapp.ui.shared.RequestPermission
+import com.example.minivideojournalapp.feature.videoList.domain.loadVideoThumbnail
 import comexampleminivideojournalapp.Video_recordings
 import java.util.Date
 
@@ -45,12 +39,6 @@ import java.util.Date
 fun VideoListScreen(onVideoClick: (String) -> Unit) {
     val viewModel: VideoViewModel = koinViewModel()
     val videos by viewModel.videos.collectAsState()
-
-    RequestPermission(
-        permission = listOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-        rationaleText = stringResource(R.string.list_permission_request_text),
-        onAllGranted = { /* your logic */ },
-    )
 
     VideoListScreenInternal(videos = videos) {
         onVideoClick(it)
@@ -114,18 +102,6 @@ fun VideoListItem(
 
 }
 
-fun loadVideoThumbnail(context: Context, uri: Uri): Bitmap? {
-    return try {
-        MediaMetadataRetriever().apply {
-            setDataSource(context, uri)
-        }.frameAtTime
-    } catch (e: Exception) {
-        null
-    }
-}
-
-
-@RequiresApi(Build.VERSION_CODES.Q)
 @Preview(showBackground = true)
 @Composable
 fun VideoListScreenPreview() {
@@ -134,7 +110,7 @@ fun VideoListScreenPreview() {
             id = 1,
             file_path = "/storage/emulated/0/Android/media/app/video1.mp4",
             timestamp = System.currentTimeMillis(),
-            description = "A beautiful sunrise 🌅",
+            description = "A beautiful sunrise",
             duration_ms = 60000
         ),
         Video_recordings(
