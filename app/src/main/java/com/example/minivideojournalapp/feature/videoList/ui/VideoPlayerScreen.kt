@@ -1,4 +1,4 @@
-package com.example.minivideojournalapp.feature.videoPlayer
+package com.example.minivideojournalapp.feature.videoList.ui
 
 import android.net.Uri
 import androidx.compose.foundation.layout.fillMaxSize

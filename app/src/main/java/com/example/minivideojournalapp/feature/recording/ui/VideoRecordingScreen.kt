@@ -1,4 +1,4 @@
-package com.example.minivideojournalapp.feature.camera.ui
+package com.example.minivideojournalapp.feature.recording.ui
 
 import android.Manifest
 import android.os.Build
@@ -16,30 +16,33 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.viewinterop.AndroidView
-import com.example.minivideojournalapp.feature.camera.domain.saveVideoToGallery
-import com.example.minivideojournalapp.feature.camera.domain.startOrStopRecording
-import com.example.minivideojournalapp.feature.camera.domain.setupCamera
+import androidx.core.net.toUri
+import com.example.minivideojournalapp.feature.recording.domain.saveVideoToGallery
+import com.example.minivideojournalapp.feature.recording.domain.startOrStopRecording
+import com.example.minivideojournalapp.feature.recording.domain.setupCamera
+import com.example.minivideojournalapp.feature.videoList.domain.getVideoDuration
 import com.example.minivideojournalapp.ui.shared.RequestPermission
 import org.koin.androidx.compose.koinViewModel
+import com.example.minivideojournalapp.R
 
 @Composable
-fun VideoRecordingScreen(onNavigateToVideos: () -> Unit){
+fun VideoRecordingScreen(){
     val viewModel: VideoViewModel = koinViewModel()
 
     VideoRecordingScreenInternal(
-        onNavigateToVideos = onNavigateToVideos,
         saveVideo = viewModel::saveVideo
     )
 }
 
 @Composable
 fun VideoRecordingScreenInternal(
-    onNavigateToVideos: () -> Unit,
-    saveVideo: (filePath: String, description: String?) -> Unit,
+    saveVideo: (filePath: String, description: String?, duration: Long) -> Unit,
 ){
     val context = LocalContext.current
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
@@ -50,6 +53,7 @@ fun VideoRecordingScreenInternal(
     val showDescriptionDialog = remember { mutableStateOf(false) }
     val descriptionInput = remember { mutableStateOf(TextFieldValue("")) }
     val lastSavedPath = remember { mutableStateOf<String?>(null) }
+    val duration = remember { mutableLongStateOf(0L) }
 
     val requiredPermissions = remember {
         mutableListOf(
@@ -73,7 +77,7 @@ fun VideoRecordingScreenInternal(
 
     RequestPermission(
         permission = requiredPermissions,
-        rationaleText = "This app needs camera access to record videos.",
+        rationaleText = stringResource(R.string.recording_permission_request_text),
         onAllGranted = {
             setupCamera(previewView, videoCapture, lifecycleOwner, context)
         }
@@ -91,15 +95,12 @@ fun VideoRecordingScreenInternal(
             Button(onClick = {
                 startOrStopRecording(context, videoCapture.value, recording) { file ->
                     val uri = saveVideoToGallery(context, file)
+                    duration.longValue = getVideoDuration(context, uri.toUri())
                     lastSavedPath.value = uri
                     showDescriptionDialog.value = true
                 }
             }) {
-                Text(if (recording.value == null) "Start Recording" else "Stop Recording")
-            }
-
-            Button(onClick = onNavigateToVideos) {
-                Text("View Videos")
+                Text(if (recording.value == null) stringResource(R.string.start_recording) else stringResource(R.string.stop_recording))
             }
         }
     }
@@ -107,32 +108,32 @@ fun VideoRecordingScreenInternal(
     if (showDescriptionDialog.value && lastSavedPath.value != null) {
         AlertDialog(
             onDismissRequest = { showDescriptionDialog.value = false },
-            title = { Text("Add Description") },
+            title = { Text(stringResource(R.string.add_description)) },
             text = {
                 TextField(
                     value = descriptionInput.value,
                     onValueChange = { descriptionInput.value = it },
-                    placeholder = { Text("Optional description") }
+                    placeholder = { Text(stringResource(R.string.optional_description)) }
                 )
             },
             confirmButton = {
                 TextButton(onClick = {
-                    saveVideo(lastSavedPath.value!!, descriptionInput.value.text.ifBlank { null })
+                    saveVideo(lastSavedPath.value!!, descriptionInput.value.text.ifBlank { null }, duration.longValue)
                     showDescriptionDialog.value = false
                     descriptionInput.value = TextFieldValue("")
                     lastSavedPath.value = null
                 }) {
-                    Text("Save")
+                    Text(stringResource(R.string.save))
                 }
             },
             dismissButton = {
                 TextButton(onClick = {
-                    saveVideo(lastSavedPath.value!!, null)
+                    saveVideo(lastSavedPath.value!!, null, duration.longValue)
                     showDescriptionDialog.value = false
                     descriptionInput.value = TextFieldValue("")
                     lastSavedPath.value = null
                 }) {
-                    Text("Skip")
+                    Text(stringResource(R.string.skip))
                 }
             }
         )
@@ -143,8 +144,7 @@ fun VideoRecordingScreenInternal(
 @Composable
 fun VideoRecordingScreenPreview() {
     VideoRecordingScreenInternal(
-        onNavigateToVideos = {},
-        saveVideo = { _, _ -> }
+        saveVideo = { _, _, _ -> }
     )
 }
 
