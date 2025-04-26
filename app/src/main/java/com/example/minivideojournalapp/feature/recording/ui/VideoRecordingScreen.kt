@@ -23,13 +23,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.minivideojournalapp.feature.recording.domain.saveVideoToGallery
 import com.example.minivideojournalapp.feature.recording.domain.startOrStopRecording
 import com.example.minivideojournalapp.feature.recording.domain.setupCamera
 import com.example.minivideojournalapp.feature.videoList.domain.getVideoDuration
-import com.example.minivideojournalapp.ui.shared.RequestPermission
 import org.koin.androidx.compose.koinViewModel
 import com.example.minivideojournalapp.R
+import com.example.minivideojournalapp.feature.recording.ui.components.RequestPermission
 
 @Composable
 fun VideoRecordingScreen(){
@@ -45,7 +46,7 @@ fun VideoRecordingScreenInternal(
     saveVideo: (filePath: String, description: String?, duration: Long) -> Unit,
 ){
     val context = LocalContext.current
-    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val previewView = remember { PreviewView(context) }
     val videoCapture = remember { mutableStateOf<VideoCapture<Recorder>?>(null) }
     val recording = remember { mutableStateOf<Recording?>(null) }

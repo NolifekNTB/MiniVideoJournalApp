@@ -39,6 +39,14 @@ android {
     buildFeatures {
         compose = true
     }
+
+    packagingOptions {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            merges += "META-INF/LICENSE.md"
+            merges += "META-INF/LICENSE-notice.md"
+        }
+    }
 }
 
 sqldelight {
@@ -49,6 +57,21 @@ sqldelight {
     }
 }
 dependencies {
+    // Kotlin test
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
+    testImplementation ("org.slf4j:slf4j-api:2.0.17")
+    testImplementation ("org.slf4j:slf4j-simple:2.0.17")
+
+
+    // Mocking
+    testImplementation ("io.mockk:mockk:1.13.4")
+    androidTestImplementation ("io.mockk:mockk:1.13.4")
+    testImplementation ("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:5.9.2")
+    androidTestImplementation ("androidx.test:core:1.5.0")
+    androidTestImplementation ("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
+
     //Koin
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)

@@ -13,6 +13,16 @@ data class BottomNavItem(
 )
 
 val bottomNavItems = listOf(
-    BottomNavItem("Record",RecordScreen,"Record", R.drawable.camera),
-    BottomNavItem("List", VideoListScreen,"List", R.drawable.list)
+    BottomNavItem(
+        route = "Record",
+        screen = RecordScreen,
+        label = "Record",
+        icon = R.drawable.camera
+    ),
+    BottomNavItem(
+        route = "List",
+        screen = VideoListScreen,
+        label = "List",
+        icon = R.drawable.list
+    )
 )
