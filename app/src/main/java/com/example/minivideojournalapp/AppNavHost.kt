@@ -1,13 +1,16 @@
 package com.example.minivideojournalapp
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.minivideojournalapp.feature.videoList.ui.VideoListScreen
-import com.example.minivideojournalapp.feature.camera.ui.VideoRecordingScreen
-import com.example.minivideojournalapp.feature.videoPlayer.VideoPlayerScreen
+import com.example.minivideojournalapp.feature.recording.ui.VideoRecordingScreen
+import com.example.minivideojournalapp.feature.videoList.ui.VideoPlayerScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -20,22 +23,17 @@ object VideoListScreen
 data class VideoPlayerScreenArgs(val videoUri: String)
 
 @Composable
-fun AppNavHost() {
-    val navController = rememberNavController()
-
+fun AppNavHost(navController: NavHostController, padding: PaddingValues) {
     NavHost(
         navController = navController,
-        startDestination = RecordScreen
+        startDestination = RecordScreen,
+        modifier = Modifier.padding(padding)
     ) {
         composable<RecordScreen> {
-            VideoRecordingScreen(
-                onNavigateToVideos = {
-                    navController.navigate(VideoListScreen)
-                }
-            )
+            VideoRecordingScreen()
         }
         composable<VideoListScreen> {
-            VideoListScreen() { selectedUri ->
+            VideoListScreen { selectedUri ->
                 navController.navigate(VideoPlayerScreenArgs(videoUri = selectedUri))
             }
         }

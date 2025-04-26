@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">MiniVideoJournalApp</string>
+    <string name="list_permission_request_text">We need access to your storage to display saved videos.</string>
+    <string name="recording_permission_request_text">This app needs camera access to record videos.</string>
+    <string name="no_description">No Description</string>
+    <string name="add_description">Add Description</string>
+    <string name="optional_description">Optional Description</string>
+    <string name="video_info">⏱ %1$d sec • %2$s</string>
+    <string name="start_recording">Start Recording</string>
+    <string name="stop_recording">Stop Recording</string>
+    <string name="save">save</string>
+    <string name="skip">skip</string>
 </resources>

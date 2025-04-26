@@ -1,4 +1,4 @@
-package com.example.minivideojournalapp.feature.camera.domain
+package com.example.minivideojournalapp.feature.recording.domain
 
 import android.content.Context
 import androidx.camera.video.FileOutputOptions
@@ -23,7 +23,10 @@ fun startOrStopRecording(
         return
     }
 
-    val videoFile = File(context.getExternalFilesDir(null), "video_${System.currentTimeMillis()}.mp4")
+    val videoFile = File(
+        context.getExternalFilesDir(null),
+        "video_${System.currentTimeMillis()}.mp4"
+    )
     val outputOptions = FileOutputOptions.Builder(videoFile).build()
 
     recording.value = videoCapture?.output

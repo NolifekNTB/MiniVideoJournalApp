@@ -1,4 +1,4 @@
-package com.example.minivideojournalapp.feature.camera.domain
+package com.example.minivideojournalapp.feature.recording.domain
 
 import android.content.ContentValues
 import android.content.Context

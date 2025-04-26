@@ -1,6 +1,12 @@
 package com.example.minivideojournalapp.feature.videoList.ui
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,16 +23,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.minivideojournalapp.feature.camera.ui.VideoViewModel
+import androidx.compose.ui.unit.sp
+import com.example.minivideojournalapp.R
+import com.example.minivideojournalapp.feature.recording.ui.VideoViewModel
 import com.example.minivideojournalapp.ui.shared.RequestPermission
 import comexampleminivideojournalapp.Video_recordings
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun VideoListScreen(onVideoClick: (String) -> Unit) {
     val viewModel: VideoViewModel = koinViewModel()
@@ -34,7 +49,7 @@ fun VideoListScreen(onVideoClick: (String) -> Unit) {
 
     RequestPermission(
         permission = listOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-        rationaleText = "We need access to your storage to display saved videos.",
+        rationaleText = stringResource(R.string.list_permission_request_text),
         onAllGranted = { /* your logic */ },
     )
 
@@ -43,6 +58,7 @@ fun VideoListScreen(onVideoClick: (String) -> Unit) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun VideoListScreenInternal(
     videos: List<Video_recordings>,
@@ -57,23 +73,62 @@ fun VideoListScreenInternal(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun VideoListItem(
     video: Video_recordings,
     onVideoClick: (String) -> Unit = {}
 ) {
-    Column(modifier = Modifier
-        .clickable { onVideoClick(video.file_path) }
-        .fillMaxWidth()
-        .padding(16.dp)
+    val bitmap = loadVideoThumbnail(LocalContext.current, Uri.parse(video.file_path))
+
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+            .clickable { onVideoClick(video.file_path) },
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Text("📝 ${video.description ?: "No Description"}")
-        Text("📁 ${video.file_path}")
-        Text("🕒 ${Date(video.timestamp)}")
-        HorizontalDivider()
+        Column(modifier = Modifier.padding(12.dp)) {
+            Text(video.description ?: stringResource(R.string.no_description), style = MaterialTheme.typography.titleMedium)
+            Spacer(Modifier.height(4.dp))
+            bitmap?.let {
+                Image(
+                    bitmap = it.asImageBitmap(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                )
+            }
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = stringResource(
+                    R.string.video_info,
+                    video.duration_ms / 1000,
+                    Date(video.timestamp).toString()
+                ),
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+    }
+
+}
+
+fun loadVideoThumbnail(context: Context, uri: Uri): Bitmap? {
+    return try {
+        MediaMetadataRetriever().apply {
+            setDataSource(context, uri)
+        }.frameAtTime
+    } catch (e: Exception) {
+        null
     }
 }
 
+
+@RequiresApi(Build.VERSION_CODES.Q)
 @Preview(showBackground = true)
 @Composable
 fun VideoListScreenPreview() {
@@ -82,13 +137,15 @@ fun VideoListScreenPreview() {
             id = 1,
             file_path = "/storage/emulated/0/Android/media/app/video1.mp4",
             timestamp = System.currentTimeMillis(),
-            description = "A beautiful sunrise 🌅"
+            description = "A beautiful sunrise 🌅",
+            duration_ms = 60000
         ),
         Video_recordings(
             id = 2,
             file_path = "/storage/emulated/0/Android/media/app/video2.mp4",
             timestamp = System.currentTimeMillis() - 3600000L,
-            description = "Evening walk notes"
+            description = "Evening walk notes",
+            duration_ms = 3600000
         )
     )
 

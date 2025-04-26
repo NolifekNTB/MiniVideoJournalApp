@@ -2,12 +2,13 @@ CREATE TABLE video_recordings (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     file_path TEXT NOT NULL,
     timestamp INTEGER NOT NULL,
-    description TEXT
+    description TEXT,
+    duration_ms INTEGER NOT NULL
 );
 
 insertVideo:
-INSERT INTO video_recordings(file_path, timestamp, description)
-VALUES (?, ?, ?);
+INSERT INTO video_recordings(file_path, timestamp, description, duration_ms)
+VALUES (?, ?, ?, ?);
 
 getAllVideos:
 SELECT * FROM video_recordings
