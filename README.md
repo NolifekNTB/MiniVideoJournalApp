@@ -27,16 +27,11 @@ It uses modern Android technologies like **Jetpack Compose**, **CameraX**, **SQL
 
 ---
 
-## 📂 Project Structure
-
-
----
-
 ## 🚀 Getting Started
 
 ### Prerequisites
 - Android Studio Giraffe or newer
-- Android device/emulator running API 29+ (Android 10+)
+- Android device/emulator running API 34+ (Android 14+)
 
 ### Installation
 
@@ -57,30 +52,17 @@ It uses modern Android technologies like **Jetpack Compose**, **CameraX**, **SQL
 ## 📄 License
 
 This project is licensed under the MIT License.  
-(Feel free to replace this with your own license.)
 
 ---
 
 ## 📈 Future Improvements
 
 - Add ability to delete videos
-- Support video categories or tagging
-- Cloud backup support (e.g., Firebase, Drive)
 - Add full error handling for failed recordings
 - Enhance UI with animations and better UX
-
----
-
-## 📢 Notes for Reviewers / Interviewers
-
-- Follows **MVVM architecture**.
-- **Dependency Injection** with Koin.
-- **SQLDelight** ensures type-safe database access.
-- Proper **dynamic permissions** handling for Android 10, 11, 12, 13+.
-- Designed with **scalability** and **testability** in mind.
+- Add ability to share videos via Android Intents (e.g., Share to WhatsApp, Gmail, etc.)
+- Integrate a code linter (e.g., Ktlint or Detekt) to enforce consistent coding standards
 
 ---
 
 # 🔥 Thank you for checking out MiniVideoJournalApp!
-![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=flat&logo=kotlin&logoColor=white)
-![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-4285F4?style=flat&logo=jetpackcompose&logoColor=white)
